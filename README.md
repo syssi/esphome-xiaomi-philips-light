@@ -7,3 +7,9 @@ Support xiaomi philips light with [ESPHome](https://esphome.io/) for [Home Assis
 
 ## Xiaomi Philips Zhirui Light
 ![](/image/xiaomi-philips-smart-2.jpg)
+
+## References
+
+* https://github.com/arendst/Tasmota/issues/3055
+* https://github.com/arendst/Tasmota/issues/3055#issuecomment-448759584
+* https://github.com/arendst/Tasmota/issues/3055#issuecomment-782597356
