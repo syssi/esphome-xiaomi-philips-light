@@ -1,6 +1,14 @@
-# ESPHome-Xiaomi-Philips-light
+# esphome-xiaomi-philips-light
 
-Support xiaomi philips light with [ESPHome](https://esphome.io/) for [Home Assistant](https://www.home-assistant.io/).
+![GitHub actions](https://github.com/syssi/esphome-xiaomi-philips-light/actions/workflows/ci.yaml/badge.svg)
+![GitHub stars](https://img.shields.io/github/stars/syssi/esphome-xiaomi-philips-light)
+![GitHub forks](https://img.shields.io/github/forks/syssi/esphome-xiaomi-philips-light)
+![GitHub watchers](https://img.shields.io/github/watchers/syssi/esphome-xiaomi-philips-light)
+[!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/syssi)
+
+Esphome custom firmware for some (Xiaomi) Philips Zhirui Lights.
+
+Kudos to [@Sergey-SRG](https://github.com/Sergey-SRG/ESPHome-Xiaomi-Philips-light) for the great work!
 
 ## Supported devices
 
