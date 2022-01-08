@@ -29,7 +29,7 @@ class XiaomiLight : public Component, public LightOutput {
 
     ESP_LOGD("custom", "Brightness: %f", brightness);
     ESP_LOGD("custom", "Cold white fraction: %f", cw_fraction);
-    this->cold_white_->set_level(cw_fraction);
+    this->cold_white_->set_level(cw_fraction > brightness ? brightness : cw_fraction);
     if (brightness == 0) {
       this->brightness_->set_level(0);
     } else {
