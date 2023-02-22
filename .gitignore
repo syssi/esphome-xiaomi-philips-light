@@ -1,0 +1,9 @@
+.idea/
+secrets.yaml
+.esphome/
+**/.pioenvs/
+**/.piolibdeps/
+**/lib/
+**/src/
+**/platformio.ini
+**/partitions.csv
