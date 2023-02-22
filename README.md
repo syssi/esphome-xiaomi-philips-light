@@ -6,7 +6,7 @@
 ![GitHub watchers](https://img.shields.io/github/watchers/syssi/esphome-xiaomi-philips-light)
 [!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/syssi)
 
-Esphome custom firmware for some (Xiaomi) Philips Zhirui Lights.
+ESPHome custom firmware for some (Xiaomi) Philips Zhirui Lights
 
 Kudos to [@Sergey-SRG](https://github.com/Sergey-SRG/ESPHome-Xiaomi-Philips-light) for the great work!
 
