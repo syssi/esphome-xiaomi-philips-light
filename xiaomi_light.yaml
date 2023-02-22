@@ -37,3 +37,33 @@ light:
         id: bulb
         gamma_correct: 0
         default_transition_length: 350ms
+
+sensor:
+  - platform: ntc
+    name: "${name} ntc temperature"
+    sensor: resistance0
+    calibration:
+      b_constant: 3950
+      reference_temperature: 25°C
+      reference_resistance: 100000
+
+  - platform: resistance
+    name: "${name} resistance"
+    id: resistance0
+    internal: true
+    sensor: adc0
+    configuration: DOWNSTREAM
+    resistor: 500000
+    reference_voltage: 3.3
+
+  - platform: adc
+    name: "${name} adc"
+    id: adc0
+    internal: true
+    pin: A0
+    update_interval: 60s
+    filters:
+      - median:
+          window_size: 3
+          send_every: 1
+          send_first_at: 1
