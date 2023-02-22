@@ -1,18 +1,12 @@
 substitutions:
-  hostname: xiaomi-philips-light
+  name: xiaomi-philips-light
 
 esphome:
-  name: $hostname
+  name: ${name}
   platform: ESP8266
   board: esp_wroom_02
-  includes: 
+  includes:
     - xiaomi_light.h
-
-web_server:
-  port: 80
-
-logger:
-  level: DEBUG
 
 wifi:
   ssid: !secret wifi_ssid
@@ -21,61 +15,51 @@ wifi:
 api:
 ota:
 
+logger:
+  esp8266_store_log_strings_in_flash: false
+
 output:
   - platform: esp8266_pwm
     pin: GPIO12
-    id: out_cw
+    id: output_cw
   - platform: esp8266_pwm
     pin: GPIO15
-    id: out_b
+    id: output_ww
 
 light:
-  - platform: custom 
-    lambda: |- 
-      auto light_out = new XiaomiLight(id(out_cw),id(out_b)); 
-      App.register_component(light_out); 
-      return {light_out}; 
-    lights: 
-      - name: $hostname Light
-        id: TheLight
+  - platform: custom
+    lambda: |-
+      auto light_out = new XiaomiLight(id(output_cw),id(output_ww));
+      App.register_component(light_out);
+      return {light_out};
+    lights:
+      - name: ${name}
+        id: bulb
         gamma_correct: 0
+        default_transition_length: 350ms
 
 sensor:
   - platform: ntc
-    id: the_ntc
-    sensor: resistance_sensor
+    name: "${name} ntc temperature"
+    sensor: resistance0
     calibration:
       b_constant: 3950
       reference_temperature: 25°C
       reference_resistance: 100000
-    name: "$hostname NTC Temperature"
-    on_value:
-      if:
-        condition:
-          light.is_on: TheLight
-        then:
-          lambda: |-
-            float brt; 
-            id(TheLight).current_values_as_brightness(&brt);
-            if (x > 55) {
-              brt -= 0.1;
-              auto cl = id(TheLight).turn_on();
-              cl.set_brightness(brt);
-              cl.perform();
-              ESP_LOGD("NTC", "Overheat! Decreasing brightness to %f", brt);
-            }
+
   - platform: resistance
-    id: resistance_sensor
-    sensor: source_sensor
+    name: "${name} resistance"
+    id: resistance0
+    internal: true
+    sensor: adc0
     configuration: DOWNSTREAM
     resistor: 500000
     reference_voltage: 3.3
-    name: $hostname Resistance Sensor
-    internal: true
+
   - platform: adc
-    name: "$hostname RAW ADC"
+    name: "${name} adc"
+    id: adc0
     internal: true
-    id: source_sensor
     pin: A0
     update_interval: 60s
     filters:
