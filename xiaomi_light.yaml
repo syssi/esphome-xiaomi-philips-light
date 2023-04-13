@@ -18,11 +18,13 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
-api:
 ota:
 
 logger:
   esp8266_store_log_strings_in_flash: false
+  level: DEBUG
+
+api:
 
 light:
   - platform: custom
