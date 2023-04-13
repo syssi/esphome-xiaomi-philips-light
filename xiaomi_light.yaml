@@ -7,7 +7,7 @@ esphome:
   comment: ${device_description}
   project:
     name: "syssi.esphome-xiaomi-philips-light"
-    version: 1.0.0
+    version: 1.1.0
   includes:
     - xiaomi_light.h
 
