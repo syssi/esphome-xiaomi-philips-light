@@ -11,6 +11,11 @@ esphome:
     version: 1.1.0
   includes:
     - xiaomi_light.h
+  on_boot:
+      priority: 600
+      then:
+        - light.turn_on:
+            id: bulb
 
 esp8266:
   board: esp_wroom_02
