@@ -40,9 +40,7 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password" > secrets.yaml'
       - run: |
-          for YAML in esp*.yaml; do
-            esphome config $YAML >/dev/null
-          done
+          esphome config xiaomi_light.yaml
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -80,6 +78,4 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password" > secrets.yaml'
       - run: |
-          for YAML in esp*.yaml; do
-            esphome compile $YAML
-          done
+          esphome compile xiaomi_light.yaml
