@@ -8,6 +8,9 @@ on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: 0 12 * * *
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   yamllint:
     runs-on: ubuntu-latest
@@ -37,7 +40,9 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password" > secrets.yaml'
       - run: |
-          esphome config xiaomi_light.yaml
+          for YAML in esp*.yaml; do
+            esphome config $YAML >/dev/null
+          done
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -75,4 +80,6 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password" > secrets.yaml'
       - run: |
-          esphome compile xiaomi_light.yaml
+          for YAML in esp*.yaml; do
+            esphome compile $YAML
+          done
