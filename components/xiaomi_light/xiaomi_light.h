@@ -1,17 +1,25 @@
 #pragma once
 
-#include "esphome.h"
+#include "esphome/core/component.h"
+#include "esphome/components/light/light_output.h"
+#include "esphome/components/output/float_output.h"
 
-// https://github.com/Sergey-SRG/ESPHome-Xiaomi-Philips-light
-class XiaomiLight : public Component, public LightOutput {
+namespace esphome {
+namespace xiaomi_light {
+
+class XiaomiLight : public Component, public light::LightOutput {
  public:
-  XiaomiLight(FloatOutput *cold_white, FloatOutput *brightness) {
-    cold_white_ = cold_white;
-    brightness_ = brightness;
+  XiaomiLight() {
     color_temperature_cw_ = 175;
     color_temperature_ww_ = 333;
   }
-  LightTraits get_traits() override {
+
+  void set_outputs(output::FloatOutput *cold_white, output::FloatOutput *brightness) {
+    cold_white_ = cold_white;
+    brightness_ = brightness;
+  }
+
+  light::LightTraits get_traits() override {
     auto traits = light::LightTraits();
     traits.set_supported_color_modes({light::ColorMode::BRIGHTNESS, light::ColorMode::COLOR_TEMPERATURE});
     traits.set_min_mireds(this->color_temperature_cw_);
@@ -19,7 +27,7 @@ class XiaomiLight : public Component, public LightOutput {
     return traits;
   }
 
-  void write_state(LightState *state) override {
+  void write_state(light::LightState *state) override {
     float brightness;
     const float color_temp =
         clamp(state->current_values.get_color_temperature(), this->color_temperature_cw_, this->color_temperature_ww_);
@@ -27,8 +35,8 @@ class XiaomiLight : public Component, public LightOutput {
         1.0f - (color_temp - color_temperature_cw_) / (color_temperature_ww_ - color_temperature_cw_);
     state->current_values_as_brightness(&brightness);
 
-    ESP_LOGD("custom", "Brightness: %f", brightness);
-    ESP_LOGD("custom", "Cold white fraction: %f", cw_fraction);
+    ESP_LOGD("xiaomi_light", "Brightness: %f", brightness);
+    ESP_LOGD("xiaomi_light", "Cold white fraction: %f", cw_fraction);
     this->cold_white_->set_level(cw_fraction > brightness ? brightness : cw_fraction);
     if (brightness == 0) {
       this->brightness_->set_level(0);
@@ -42,8 +50,11 @@ class XiaomiLight : public Component, public LightOutput {
   }
 
  protected:
-  FloatOutput *cold_white_;
-  FloatOutput *brightness_;
+  output::FloatOutput *cold_white_;
+  output::FloatOutput *brightness_;
   float color_temperature_cw_;
   float color_temperature_ww_;
 };
+
+}  // namespace xiaomi_light
+}  // namespace esphome

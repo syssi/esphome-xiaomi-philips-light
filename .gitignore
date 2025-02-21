@@ -1,9 +1,13 @@
 .idea/
 secrets.yaml
 .esphome/
+/tests/.gitignore
 **/.pioenvs/
 **/.piolibdeps/
 **/lib/
 **/src/
-**/platformio.ini
 **/partitions.csv
+
+__pycache__/
+*.py[cod]
+*$py.class
