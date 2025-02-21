@@ -35,8 +35,6 @@ class XiaomiLight : public Component, public light::LightOutput {
         1.0f - (color_temp - color_temperature_cw_) / (color_temperature_ww_ - color_temperature_cw_);
     state->current_values_as_brightness(&brightness);
 
-    ESP_LOGD("xiaomi_light", "Brightness: %f", brightness);
-    ESP_LOGD("xiaomi_light", "Cold white fraction: %f", cw_fraction);
     this->cold_white_->set_level(cw_fraction > brightness ? brightness : cw_fraction);
     if (brightness == 0) {
       this->brightness_->set_level(0);
