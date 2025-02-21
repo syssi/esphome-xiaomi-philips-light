@@ -4,6 +4,7 @@ on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - main
+      - develop
   pull_request:
   schedule:
     - cron: 0 12 * * *
@@ -20,6 +21,160 @@ jobs:
         uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .yamllint
+
+  lint-clang-format:
+    env:
+      esphome_directory: esphome
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+      - name: Cache pip modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
+          restore-keys: |
+            esphome-pip-3.12-
+
+      - name: 💣 Clone esphome project
+        run: git clone https://github.com/esphome/esphome.git
+      - name: 💣 Copy component into the esphome project
+        run: |
+          cp -r ../components/* esphome/components/
+          git config user.name "ci"
+          git config user.email "ci@github.com"
+          git add .
+          git commit -a -m "Add external component"
+        working-directory: ${{ env.esphome_directory }}
+
+      - name: Add missing requirements
+        run: pip3 install setuptools wheel
+      - name: Set up python environment
+        run: VIRTUAL_ENV=false script/setup
+        working-directory: ${{ env.esphome_directory }}
+
+      # Set up the pio project so that the cpp checks know how files are compiled
+      # (build flags, libraries etc)
+      - name: Set up platformio environment
+        run: pio init --ide vscode
+        working-directory: ${{ env.esphome_directory }}
+
+      - name: Run clang-format
+        run: script/clang-format -i
+        working-directory: ${{ env.esphome_directory }}
+
+      - name: Suggest changes
+        run: script/ci-suggest-changes
+        working-directory: ${{ env.esphome_directory }}
+
+  lint-clang-tidy:
+    env:
+      esphome_directory: esphome
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+      - name: Cache pip modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
+          restore-keys: |
+            esphome-pip-3.12-
+
+      - name: 💣Clone esphome project
+        run: git clone https://github.com/esphome/esphome.git
+      - name: 💣Copy component into the esphome project
+        run: |
+          cp -r ../components/* esphome/components/
+          git config user.name "ci"
+          git config user.email "ci@github.com"
+          git add .
+          git commit -a -m "Add external component"
+        working-directory: ${{ env.esphome_directory }}
+
+      - name: Add missing requirements
+        run: pip3 install setuptools wheel
+      - name: Set up python environment
+        run: VIRTUAL_ENV=false script/setup
+        working-directory: ${{ env.esphome_directory }}
+
+      # Set up the pio project so that the cpp checks know how files are compiled
+      # (build flags, libraries etc)
+      - name: Set up platformio environment
+        run: pio init --ide vscode
+        working-directory: ${{ env.esphome_directory }}
+
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/workflows/matchers/clang-tidy.json"
+          echo "::add-matcher::.github/workflows/matchers/gcc.json"
+      - name: Run lint-cpp
+        run: script/lint-cpp -c
+        working-directory: ${{ env.esphome_directory }}
+      - name: Suggest changes
+        run: script/ci-suggest-changes
+        working-directory: ${{ env.esphome_directory }}
+
+  lint-python:
+    env:
+      esphome_directory: esphome
+    # Don't use the esphome-lint docker image because it may contain outdated requirements.
+    # This way, all dependencies are cached via the cache action.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+      - name: Cache pip modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
+          restore-keys: |
+            esphome-pip-3.12-
+
+      - name: 💣Clone esphome project
+        run: git clone https://github.com/esphome/esphome.git
+      - name: 💣Copy component into the esphome project
+        run: |
+          cp -r ../components/* esphome/components/
+          git config user.name "ci"
+          git config user.email "ci@github.com"
+          git add .
+          git commit -a -m "Add external component"
+        working-directory: ${{ env.esphome_directory }}
+
+      - name: Add missing requirements
+        run: pip3 install setuptools wheel
+      - name: Set up python environment
+        run: VIRTUAL_ENV=false script/setup
+        working-directory: ${{ env.esphome_directory }}
+
+      - name: Register problem matchers
+        run: |
+          echo "::add-matcher::.github/workflows/matchers/ci-custom.json"
+          echo "::add-matcher::.github/workflows/matchers/lint-python.json"
+          echo "::add-matcher::.github/workflows/matchers/python.json"
+
+      - name: Lint Custom
+        run: script/ci-custom.py -c
+        working-directory: ${{ env.esphome_directory }}
+      - name: Run Ruff
+        run: ruff format esphome tests
+        working-directory: ${{ env.esphome_directory }}
+      - name: Suggest changes
+        run: script/ci-suggest-changes
+        working-directory: ${{ env.esphome_directory }}
 
   esphome-config:
     runs-on: ubuntu-latest
@@ -40,7 +195,7 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password" > secrets.yaml'
       - run: |
-          esphome config xiaomi_light.yaml
+          esphome -s external_components_source components config xiaomi_light.yaml >/dev/null
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -78,4 +233,4 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password" > secrets.yaml'
       - run: |
-          esphome compile xiaomi_light.yaml
+          esphome -s external_components_source components compile xiaomi_light.yaml
