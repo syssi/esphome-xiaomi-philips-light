@@ -22,15 +22,17 @@ class XiaomiLight : public Component, public light::LightOutput {
   light::LightTraits get_traits() override {
     auto traits = light::LightTraits();
     traits.set_supported_color_modes({light::ColorMode::COLOR_TEMPERATURE});
-    traits.set_min_mireds(this->color_temperature_cw_);
-    traits.set_max_mireds(this->color_temperature_ww_);
+    traits.set_min_mireds(153.0f);  // <-- for Home Assistant
+    traits.set_max_mireds(500.0f);  // <-- for Home Assistant
     return traits;
   }
 
+
   void write_state(light::LightState *state) override {
     float brightness;
-    const float color_temp =
-        clamp(state->current_values.get_color_temperature(), this->color_temperature_cw_, this->color_temperature_ww_);
+    const float input_temp = state->current_values.get_color_temperature();
+    const float mapped_temp = this->map(input_temp, 153.0f, 500.0f, this->color_temperature_cw_, this->color_temperature_ww_);
+    const float color_temp = clamp(mapped_temp, this->color_temperature_cw_, this->color_temperature_ww_);
     const float cw_fraction =
         1.0f - (color_temp - color_temperature_cw_) / (color_temperature_ww_ - color_temperature_cw_);
     state->current_values_as_brightness(&brightness);
