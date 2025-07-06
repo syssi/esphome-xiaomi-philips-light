@@ -9,7 +9,7 @@ esphome:
   min_version: 2024.6.0
   project:
     name: "syssi.esphome-xiaomi-philips-light"
-    version: 2.0.0
+    version: 2.1.0
 
 esp8266:
   board: esp_wroom_02
