@@ -48,8 +48,8 @@ class XiaomiLight : public Component, public light::LightOutput {
   }
 
  protected:
-  output::FloatOutput *cold_white_;
-  output::FloatOutput *brightness_;
+  output::FloatOutput *cold_white_{nullptr};
+  output::FloatOutput *brightness_{nullptr};
   float color_temperature_cw_;
   float color_temperature_ww_;
 };
