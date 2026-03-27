@@ -6,6 +6,7 @@ from esphome.const import CONF_BRIGHTNESS, CONF_COLD_WHITE, CONF_OUTPUT_ID
 from . import XiaomiLight
 
 DEPENDENCIES = ["output"]
+CODEOWNERS = ["@syssi"]
 
 CONFIG_SCHEMA = light.RGB_LIGHT_SCHEMA.extend(
     {
