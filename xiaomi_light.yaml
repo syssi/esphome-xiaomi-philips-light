@@ -50,7 +50,7 @@ output:
 
 sensor:
   - platform: ntc
-    name: "${name} ntc temperature"
+    name: "ntc temperature"
     sensor: resistance0
     calibration:
       b_constant: 3950
@@ -58,7 +58,7 @@ sensor:
       reference_resistance: 100000
 
   - platform: resistance
-    name: "${name} resistance"
+    name: "resistance"
     id: resistance0
     internal: true
     sensor: adc0
@@ -67,7 +67,7 @@ sensor:
     reference_voltage: 3.3
 
   - platform: adc
-    name: "${name} adc"
+    name: "adc"
     id: adc0
     internal: true
     pin: A0
