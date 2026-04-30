@@ -358,6 +358,11 @@ jobs:
           echo "::add-matcher::.github/workflows/matchers/gcc.json"
           echo "::add-matcher::.github/workflows/matchers/clang-tidy.json"
 
+      - name: Install clang-tidy
+        run: |
+          . venv/bin/activate
+          pip install clang-tidy -c requirements_dev.txt
+
       - name: Run clang-tidy
         run: |
           . venv/bin/activate
