@@ -1,0 +1,15 @@
+output:
+  - platform: template
+    id: cw_output
+    type: float
+    lambda: return {};
+  - platform: template
+    id: brightness_output
+    type: float
+    lambda: return {};
+
+light:
+  - platform: xiaomi_light
+    cold_white: cw_output
+    brightness: brightness_output
+    name: test_light
