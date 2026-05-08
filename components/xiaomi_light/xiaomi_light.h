@@ -4,8 +4,7 @@
 #include "esphome/components/light/light_output.h"
 #include "esphome/components/output/float_output.h"
 
-namespace esphome {
-namespace xiaomi_light {
+namespace esphome::xiaomi_light {
 
 class XiaomiLight : public Component, public light::LightOutput {
  public:
@@ -54,5 +53,4 @@ class XiaomiLight : public Component, public light::LightOutput {
   float color_temperature_ww_;
 };
 
-}  // namespace xiaomi_light
-}  // namespace esphome
+}  // namespace esphome::xiaomi_light
