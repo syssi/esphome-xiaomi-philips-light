@@ -3,6 +3,7 @@ from esphome.components import light
 import esphome.config_validation as cv
 
 CODEOWNERS = ["@syssi"]
+DOMAIN = "xiaomi_light"
 DEPENDENCIES = ["light", "output"]
 
 xiaomi_light_ns = cg.esphome_ns.namespace("xiaomi_light")
